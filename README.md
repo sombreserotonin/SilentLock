@@ -23,7 +23,7 @@
 ### Installation
 
 ```bash
-git clone https://github.com/yourusername/SilentLock.git
+git clone https://github.com/sombreserotonin/SilentLock.git
 cd SilentLock
 cargo build --release
 ```
