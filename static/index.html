@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure File Encryption</title>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #166088;
+            --accent-color: #4cb5ae;
+            --background-color: #f5f7fa;
+            --text-color: #333;
+            --error-color: #e74c3c;
+            --success-color: #2ecc71;
+            --border-radius: 4px;
+            --box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            padding: 20px;
+        }
+        
+        .container {
+            display: flex;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .main-content {
+            flex: 1;
+            margin-right: 20px;
+        }
+        
+        .sidebar {
+            width: 300px;
+            margin-top: 70px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .description {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .card-title {
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        input[type="file"],
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+        }
+        
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .button-secondary {
+            background-color: #6c757d;
+        }
+        
+        .button-secondary:hover {
+            background-color: #5a6268;
+        }
+        
+        .button-success {
+            background-color: var(--success-color);
+        }
+        
+        .button-success:hover {
+            background-color: #27ae60;
+        }
+        
+        .button-danger {
+            background-color: var(--error-color);
+        }
+        
+        .button-danger:hover {
+            background-color: #c0392b;
+        }
+        
+        .alert {
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 15px;
+        }
+        
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .file-list {
+            list-style: none;
+        }
+        
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .file-item:last-child {
+            border-bottom: none;
+        }
+        
+        .file-info {
+            flex: 1;
+        }
+        
+        .file-name {
+            font-weight: 600;
+        }
+        
+        .file-meta {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .file-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+        
+        .tab.active {
+            border-bottom: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .encrypted-badge {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: 10px;
+        }
+        
+        /* About section styles */
+        .about-content {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .about-content h3 {
+            color: var(--secondary-color);
+            margin-top: 15px;
+            margin-bottom: 8px;
+        }
+        
+        .about-content p {
+            margin-bottom: 12px;
+        }
+        
+        .about-content ul {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .about-content li {
+            margin-bottom: 5px;
+        }
+        
+        .about-content .alert {
+            margin-top: 15px;
+        }
+        
+        .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="main-content">
+            <header>
+                <h1>Secure File Encryption</h1>
+                <p class="description">Encrypt and decrypt your files with military-grade encryption</p>
+            </header>
+        
+            <div class="tabs">
+                <div class="tab active" data-tab="upload">Upload</div>
+                <div class="tab" data-tab="decrypt-upload">Upload Encrypted</div>
+                <div class="tab" data-tab="files">Files</div>
+            </div>
+        
+            <div id="alerts"></div>
+            
+            <div id="upload-tab" class="tab-content active">
+            <div class="card">
+                <h2 class="card-title">Upload a File</h2>
+                <form id="upload-form">
+                    <div class="form-group">
+                        <label for="file">Select a file to upload:</label>
+                        <input type="file" id="file" name="file" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="encrypt-on-upload">
+                            <input type="checkbox" id="encrypt-on-upload">
+                            Encrypt file during upload
+                        </label>
+                    </div>
+                    <div id="encrypt-passphrase-group" class="form-group hidden">
+                        <label for="encrypt-on-upload-passphrase">Passphrase:</label>
+                        <input type="password" id="encrypt-on-upload-passphrase" placeholder="Enter a strong passphrase">
+                    </div>
+                    <div class="alert alert-info">
+                        <strong>Note:</strong> When you encrypt a file, the original unencrypted file will be automatically deleted for security.
+                    </div>
+                    <button type="submit" id="upload-button">
+                        <span id="upload-loading" class="loading hidden"></span>
+                        Upload
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+            <div id="decrypt-upload-tab" class="tab-content">
+            <div class="card">
+                <h2 class="card-title">Upload an Encrypted File</h2>
+                <form id="decrypt-upload-form">
+                    <div class="form-group">
+                        <label for="encrypted-file">Select an encrypted file to upload:</label>
+                        <input type="file" id="encrypted-file" name="file" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="upload-passphrase">Passphrase:</label>
+                        <input type="password" id="upload-passphrase" required placeholder="Enter the passphrase">
+                    </div>
+                    <button type="submit" id="decrypt-upload-button">
+                        <span id="decrypt-upload-loading" class="loading hidden"></span>
+                        Upload & Decrypt
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+            <div id="files-tab" class="tab-content">
+                <div class="card">
+                    <h2 class="card-title">Your Files</h2>
+                    <div id="file-list-container">
+                        <p>Loading files...</p>
+                    </div>
+                </div>
+                
+                <div class="card hidden" id="encrypt-card">
+                    <h2 class="card-title">Encrypt File</h2>
+                    <form id="encrypt-form">
+                        <input type="hidden" id="encrypt-file-id">
+                        <div class="form-group">
+                            <label for="encrypt-passphrase">Passphrase:</label>
+                            <input type="password" id="encrypt-passphrase" required placeholder="Enter a strong passphrase">
+                        </div>
+                        <div class="form-group">
+                            <label for="encrypt-confirm-passphrase">Confirm Passphrase:</label>
+                            <input type="password" id="encrypt-confirm-passphrase" required placeholder="Confirm your passphrase">
+                        </div>
+                        <button type="submit" id="encrypt-button">
+                            <span id="encrypt-loading" class="loading hidden"></span>
+                            Encrypt
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="card hidden" id="decrypt-card">
+                    <h2 class="card-title">Decrypt File</h2>
+                    <form id="decrypt-form">
+                        <input type="hidden" id="decrypt-file-id">
+                        <div class="form-group">
+                            <label for="decrypt-passphrase">Passphrase:</label>
+                            <input type="password" id="decrypt-passphrase" required placeholder="Enter the passphrase">
+                        </div>
+                        <button type="submit" id="decrypt-button">
+                            <span id="decrypt-loading" class="loading hidden"></span>
+                            Decrypt
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="sidebar">
+            <div class="card">
+                <h2 class="card-title">About Encryption</h2>
+                <div class="about-content">
+                    <h3>AES-256-GCM</h3>
+                    <p>This application uses AES-256-GCM (Advanced Encryption Standard with 256-bit keys in Galois/Counter Mode), which is considered military-grade encryption and is used by governments and security professionals worldwide.</p>
+                    
+                    <h3>Key Features</h3>
+                    <ul>
+                        <li><strong>Strong Encryption:</strong> 256-bit keys provide extremely strong protection against brute force attacks</li>
+                        <li><strong>Authenticated Encryption:</strong> GCM mode provides both confidentiality and authenticity</li>
+                        <li><strong>Secure Key Derivation:</strong> Your passphrase is processed using SHA-256 to create the encryption key</li>
+                    </ul>
+                    
+                    <h3>Security Measures</h3>
+                    <ul>
+                        <li>Decrypted files are never stored on the server</li>
+                        <li>Original files are deleted after encryption</li>
+                        <li>All data is wiped when the application shuts down</li>
+                        <li>Passphrases are never stored</li>
+                    </ul>
+                    
+                    <div class="alert alert-info">
+                        <strong>Remember:</strong> Always use strong passphrases and keep them secure. If you lose your passphrase, your encrypted files cannot be recovered!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // DOM Elements
+        const uploadForm = document.getElementById('upload-form');
+        const encryptForm = document.getElementById('encrypt-form');
+        const decryptForm = document.getElementById('decrypt-form');
+        const fileListContainer = document.getElementById('file-list-container');
+        const encryptCard = document.getElementById('encrypt-card');
+        const decryptCard = document.getElementById('decrypt-card');
+        const alertsContainer = document.getElementById('alerts');
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        // Loading indicators
+        const uploadLoading = document.getElementById('upload-loading');
+        const encryptLoading = document.getElementById('encrypt-loading');
+        const decryptLoading = document.getElementById('decrypt-loading');
+        const decryptUploadLoading = document.getElementById('decrypt-upload-loading');
+        
+        // API endpoints
+        const API = {
+            UPLOAD: '/api/files/upload',
+            UPLOAD_ENCRYPT: '/api/files/upload-encrypt',
+            ENCRYPT: '/api/files/encrypt',
+            DECRYPT: '/api/files/decrypt',
+            LIST: '/api/files/list',
+            DOWNLOAD: '/api/files/download'
+        };
+        
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            // Tab switching
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    
+                    // Update active tab
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    // Update active content
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+                    
+                    // If files tab is selected, load the file list
+                    if (tabId === 'files') {
+                        loadFiles();
+                    }
+                });
+            });
+            
+            // Form submissions
+            uploadForm.addEventListener('submit', handleUpload);
+            encryptForm.addEventListener('submit', handleEncrypt);
+            decryptForm.addEventListener('submit', handleDecrypt);
+            document.getElementById('decrypt-upload-form').addEventListener('submit', handleDecryptUpload);
+        });
+        
+        // Event listener for encrypt-on-upload checkbox
+        document.addEventListener('DOMContentLoaded', () => {
+            const encryptOnUpload = document.getElementById('encrypt-on-upload');
+            const encryptPassphraseGroup = document.getElementById('encrypt-passphrase-group');
+            
+            encryptOnUpload.addEventListener('change', () => {
+                if (encryptOnUpload.checked) {
+                    encryptPassphraseGroup.classList.remove('hidden');
+                } else {
+                    encryptPassphraseGroup.classList.add('hidden');
+                }
+            });
+        });
+        
+        // File Upload
+        async function handleUpload(e) {
+            e.preventDefault();
+            
+            const fileInput = document.getElementById('file');
+            const file = fileInput.files[0];
+            const encryptOnUpload = document.getElementById('encrypt-on-upload').checked;
+            const passphrase = document.getElementById('encrypt-on-upload-passphrase').value;
+            
+            if (!file) {
+                showAlert('Please select a file to upload', 'error');
+                return;
+            }
+            
+            if (encryptOnUpload && (!passphrase || passphrase.length < 8)) {
+                showAlert('Please enter a passphrase of at least 8 characters', 'error');
+                return;
+            }
+            
+            // Create form data
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            try {
+                // Show loading indicator
+                uploadLoading.classList.remove('hidden');
+                
+                let url = API.UPLOAD;
+                
+                // If encrypting on upload, use the upload-encrypt endpoint
+                if (encryptOnUpload) {
+                    url = `${API.UPLOAD_ENCRYPT}?passphrase=${encodeURIComponent(passphrase)}`;
+                }
+                
+                // Upload the file
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    if (encryptOnUpload) {
+                        showAlert('File uploaded and encrypted successfully', 'success');
+                    } else {
+                        showAlert('File uploaded successfully', 'success');
+                    }
+                    
+                    fileInput.value = '';
+                    document.getElementById('encrypt-on-upload').checked = false;
+                    document.getElementById('encrypt-on-upload-passphrase').value = '';
+                    document.getElementById('encrypt-passphrase-group').classList.add('hidden');
+                    
+                    // Switch to files tab
+                    tabs[2].click();
+                } else {
+                    showAlert(`Upload failed: ${data.message || 'Unknown error'}`, 'error');
+                }
+            } catch (error) {
+                showAlert(`Upload failed: ${error.message}`, 'error');
+            } finally {
+                // Hide loading indicator
+                uploadLoading.classList.add('hidden');
+            }
+        }
+        
+        // File Encryption
+        async function handleEncrypt(e) {
+            e.preventDefault();
+            
+            const fileId = document.getElementById('encrypt-file-id').value;
+            const passphrase = document.getElementById('encrypt-passphrase').value;
+            const confirmPassphrase = document.getElementById('encrypt-confirm-passphrase').value;
+            
+            if (passphrase !== confirmPassphrase) {
+                showAlert('Passphrases do not match', 'error');
+                return;
+            }
+            
+            if (passphrase.length < 8) {
+                showAlert('Passphrase must be at least 8 characters long', 'error');
+                return;
+            }
+            
+            try {
+                // Show loading indicator
+                encryptLoading.classList.remove('hidden');
+                
+                // Encrypt the file
+                const response = await fetch(API.ENCRYPT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        file_id: fileId,
+                        passphrase: passphrase
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showAlert('File encrypted successfully', 'success');
+                    encryptCard.classList.add('hidden');
+                    document.getElementById('encrypt-passphrase').value = '';
+                    document.getElementById('encrypt-confirm-passphrase').value = '';
+                    
+                    // Reload file list
+                    loadFiles();
+                } else {
+                    showAlert(`Encryption failed: ${data.message || 'Unknown error'}`, 'error');
+                }
+            } catch (error) {
+                showAlert(`Encryption failed: ${error.message}`, 'error');
+            } finally {
+                // Hide loading indicator
+                encryptLoading.classList.add('hidden');
+            }
+        }
+        
+        // File Decryption
+        async function handleDecrypt(e) {
+            e.preventDefault();
+            
+            const fileId = document.getElementById('decrypt-file-id').value;
+            const passphrase = document.getElementById('decrypt-passphrase').value;
+            
+            if (!passphrase) {
+                showAlert('Please enter the passphrase', 'error');
+                return;
+            }
+            
+            try {
+                // Show loading indicator
+                decryptLoading.classList.remove('hidden');
+                
+                // Create a blob URL for the decrypted file
+                const response = await fetch(API.DECRYPT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        file_id: fileId,
+                        passphrase: passphrase
+                    })
+                });
+                
+                if (!response.ok) {
+                    // Try to parse error message
+                    try {
+                        const errorData = await response.json();
+                        showAlert(`Decryption failed: ${errorData.message || 'Unknown error'}`, 'error');
+                    } catch (parseError) {
+                        showAlert(`Decryption failed: ${response.statusText}`, 'error');
+                    }
+                    return;
+                }
+                
+                // Get the filename from the Content-Disposition header if available
+                let filename = 'decrypted-file';
+                const contentDisposition = response.headers.get('Content-Disposition');
+                if (contentDisposition) {
+                    const filenameMatch = contentDisposition.match(/filename="(.+)"/);
+                    if (filenameMatch && filenameMatch[1]) {
+                        filename = filenameMatch[1];
+                    }
+                }
+                
+                // Get the file blob
+                const blob = await response.blob();
+                
+                // Create a download link
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                
+                // Trigger the download
+                a.click();
+                
+                // Clean up
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+                
+                // Show success message
+                showAlert('File decrypted and downloaded successfully', 'success');
+                decryptCard.classList.add('hidden');
+                document.getElementById('decrypt-passphrase').value = '';
+                
+            } catch (error) {
+                showAlert(`Decryption failed: ${error.message}`, 'error');
+            } finally {
+                // Hide loading indicator
+                decryptLoading.classList.add('hidden');
+            }
+        }
+        
+        // Load Files
+        async function loadFiles() {
+            try {
+                fileListContainer.innerHTML = '<p>Loading files...</p>';
+                
+                const response = await fetch(API.LIST);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    if (data.files.length === 0) {
+                        fileListContainer.innerHTML = '<p>No files found. Upload a file first.</p>';
+                        return;
+                    }
+                    
+                    // Create file list
+                    const fileList = document.createElement('ul');
+                    fileList.className = 'file-list';
+                    
+                    data.files.forEach(file => {
+                        const fileItem = document.createElement('li');
+                        fileItem.className = 'file-item';
+                        
+                        // Format file size
+                        const fileSize = formatFileSize(file.size);
+                        
+                        // Format date
+                        const uploadDate = new Date(file.uploaded_at).toLocaleString();
+                        
+                        fileItem.innerHTML = `
+                            <div class="file-info">
+                                <div class="file-name">
+                                    ${file.filename}
+                                    ${file.encrypted ? '<span class="encrypted-badge">Encrypted</span>' : ''}
+                                </div>
+                                <div class="file-meta">
+                                    ${fileSize} • Uploaded ${uploadDate}
+                                </div>
+                            </div>
+                            <div class="file-actions">
+                                <button class="download-file-btn" data-id="${file.id}">Download</button>
+                                ${!file.encrypted ? 
+                                    `<button class="encrypt-file-btn" data-id="${file.id}">Encrypt</button>` : 
+                                    `<button class="decrypt-file-btn" data-id="${file.id}">Decrypt</button>`
+                                }
+                            </div>
+                        `;
+                        
+                        fileList.appendChild(fileItem);
+                    });
+                    
+                    fileListContainer.innerHTML = '';
+                    fileListContainer.appendChild(fileList);
+                    
+                    // Add event listeners to buttons
+                    document.querySelectorAll('.encrypt-file-btn').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const fileId = btn.getAttribute('data-id');
+                            showEncryptForm(fileId);
+                        });
+                    });
+                    
+                    document.querySelectorAll('.decrypt-file-btn').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const fileId = btn.getAttribute('data-id');
+                            showDecryptForm(fileId);
+                        });
+                    });
+                    
+                    document.querySelectorAll('.download-file-btn').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const fileId = btn.getAttribute('data-id');
+                            downloadFile(fileId);
+                        });
+                    });
+                } else {
+                    fileListContainer.innerHTML = `<p>Error loading files: ${data.message || 'Unknown error'}</p>`;
+                }
+            } catch (error) {
+                fileListContainer.innerHTML = `<p>Error loading files: ${error.message}</p>`;
+            }
+        }
+        
+        // Show encrypt form
+        function showEncryptForm(fileId) {
+            document.getElementById('encrypt-file-id').value = fileId;
+            encryptCard.classList.remove('hidden');
+            decryptCard.classList.add('hidden');
+            document.getElementById('encrypt-passphrase').focus();
+        }
+        
+        // Show decrypt form
+        function showDecryptForm(fileId) {
+            document.getElementById('decrypt-file-id').value = fileId;
+            decryptCard.classList.remove('hidden');
+            encryptCard.classList.add('hidden');
+            document.getElementById('decrypt-passphrase').focus();
+        }
+        
+        // Show alert
+        function showAlert(message, type) {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            
+            alertsContainer.appendChild(alert);
+            
+            // Remove alert after 5 seconds
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+        
+        // Download file
+        function downloadFile(fileId) {
+            // Create a direct link to the file and trigger download
+            const downloadUrl = `${API.DOWNLOAD}/${fileId}`;
+            
+            // Create a temporary link element
+            const link = document.createElement('a');
+            link.href = downloadUrl;
+            link.target = '_blank';
+            
+            // Append to the document and trigger click
+            document.body.appendChild(link);
+            link.click();
+            
+            // Clean up
+            document.body.removeChild(link);
+        }
+        
+        // Upload and decrypt in one step
+        async function handleDecryptUpload(e) {
+            e.preventDefault();
+            
+            const fileInput = document.getElementById('encrypted-file');
+            const file = fileInput.files[0];
+            const passphrase = document.getElementById('upload-passphrase').value;
+            
+            if (!file) {
+                showAlert('Please select a file to upload', 'error');
+                return;
+            }
+            
+            if (!passphrase || passphrase.length < 8) {
+                showAlert('Please enter a passphrase of at least 8 characters', 'error');
+                return;
+            }
+            
+            // Create form data
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            try {
+                // Show loading indicator
+                decryptUploadLoading.classList.remove('hidden');
+                
+                // First, upload the encrypted file
+                const uploadResponse = await fetch(API.UPLOAD, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!uploadResponse.ok) {
+                    // Try to parse error message
+                    try {
+                        const errorData = await uploadResponse.json();
+                        showAlert(`Upload failed: ${errorData.message || 'Unknown error'}`, 'error');
+                    } catch (parseError) {
+                        showAlert(`Upload failed: ${uploadResponse.statusText}`, 'error');
+                    }
+                    return;
+                }
+                
+                // Get the uploaded file info
+                const uploadData = await uploadResponse.json();
+                const fileId = uploadData.file.id;
+                
+                // Now decrypt the file and download it
+                const decryptResponse = await fetch(API.DECRYPT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        file_id: fileId,
+                        passphrase: passphrase
+                    })
+                });
+                
+                if (!decryptResponse.ok) {
+                    // Try to parse error message
+                    try {
+                        const errorData = await decryptResponse.json();
+                        showAlert(`Decryption failed: ${errorData.message || 'Unknown error'}`, 'error');
+                    } catch (parseError) {
+                        showAlert(`Decryption failed: ${decryptResponse.statusText}`, 'error');
+                    }
+                    return;
+                }
+                
+                // Get the filename from the Content-Disposition header if available
+                let filename = 'decrypted-file';
+                const contentDisposition = decryptResponse.headers.get('Content-Disposition');
+                if (contentDisposition) {
+                    const filenameMatch = contentDisposition.match(/filename="(.+)"/);
+                    if (filenameMatch && filenameMatch[1]) {
+                        filename = filenameMatch[1];
+                    }
+                }
+                
+                // Get the file blob
+                const blob = await decryptResponse.blob();
+                
+                // Create a download link
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                
+                // Trigger the download
+                a.click();
+                
+                // Clean up
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+                
+                // Show success message and reset form
+                showAlert('File uploaded, decrypted, and downloaded successfully', 'success');
+                fileInput.value = '';
+                document.getElementById('upload-passphrase').value = '';
+                
+            } catch (error) {
+                showAlert(`Operation failed: ${error.message}`, 'error');
+            } finally {
+                // Hide loading indicator
+                decryptUploadLoading.classList.add('hidden');
+            }
+        }
+        
+        // Format file size
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+    </script>
+</body>
+</html>
