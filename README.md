@@ -36,7 +36,7 @@ cargo build --release
 - [ ] Ability to send encrypted files to other users via Web UI
 - [ ] Dockerization for easy deployment (including Unraid compatibility)
 - [ ] Drag-and-drop support in Web UI
-- [ ] Fix branding
+- [x] Fix branding
 
 ---
 

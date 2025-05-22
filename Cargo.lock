@@ -1638,29 +1638,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
 
 [[package]]
-name = "secure-file-transfer"
-version = "0.1.0"
-dependencies = [
- "actix-files",
- "actix-multipart",
- "actix-web",
- "aes-gcm",
- "chrono",
- "dotenv",
- "env_logger",
- "futures",
- "log",
- "rand 0.8.5",
- "rsa",
- "serde",
- "serde_json",
- "sha2",
- "thiserror",
- "tokio",
- "uuid",
-]
-
-[[package]]
 name = "semver"
 version = "1.0.26"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1764,6 +1741,29 @@ checksum = "77549399552de45a898a580c1b41d445bf730df867cc44e6c0233bbc4b8329de"
 dependencies = [
  "digest",
  "rand_core 0.6.4",
+]
+
+[[package]]
+name = "silentlock"
+version = "0.1.0"
+dependencies = [
+ "actix-files",
+ "actix-multipart",
+ "actix-web",
+ "aes-gcm",
+ "chrono",
+ "dotenv",
+ "env_logger",
+ "futures",
+ "log",
+ "rand 0.8.5",
+ "rsa",
+ "serde",
+ "serde_json",
+ "sha2",
+ "thiserror",
+ "tokio",
+ "uuid",
 ]
 
 [[package]]

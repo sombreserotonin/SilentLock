@@ -17,7 +17,7 @@ async fn main() -> io::Result<()> {
     // Initialize logger
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
     
-    info!("Starting secure file transfer server");
+    info!("Starting SilentLock server");
     
     // Create data directory if it doesn't exist
     std::fs::create_dir_all("./data/uploads")?;
