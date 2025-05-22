@@ -1,6 +1,6 @@
-# Cryptify
+# SilentLock
 
-**Cryptify** is a lightweight Rust-based file encryption and decryption tool designed for simplicity, speed, and secure transmission. It allows users to encrypt files and share them over the internet securely through a terminal interface, with a web interface in development.
+**SilentLock** is a lightweight Rust-based file encryption and decryption tool designed for simplicity, speed, and secure transmission. It allows users to encrypt files and share them over the internet securely through a terminal interface, with a web interface in development.
 
 ---
 
@@ -23,30 +23,10 @@
 ### Installation
 
 ```bash
-git clone https://github.com/yourusername/cryptify.git
-cd cryptify
+git clone https://github.com/yourusername/SilentLock.git
+cd SilentLock
 cargo build --release
 ```
-
-### Usage
-
-```bash
-# Encrypt a file
-./cryptify encrypt <input_file> <output_file>
-
-# Decrypt a file
-./cryptify decrypt <input_file> <output_file>
-```
-
-All terminal output is piped to a scratchfile:
-
-```bash
-cargo run -- encrypt file.txt file.txt.enc 2>&1 | tee cline/encrypt_output.txt
-```
-
-If output does not appear in the terminal (due to intermittent VSCode bugs), read directly from the scratchfile.
-
----
 
 ## Project Roadmap (Not in Order)
 
